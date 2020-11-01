@@ -12,6 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import *
 import pyaction as pa
 import pickle
+import base64
 
 from .wait_for import WaitFor
 from .presets import PRESETS
@@ -37,29 +38,12 @@ class ChromeCapabilities(object):
     def add_experimental_option(self, experimental_option):
         self.desired['goog:chromeOptions']['prefs'] = experimental_option
 
-    # @property
-    # def extensions(self):
-    #     """
-    #     Returns a list of encoded extensions that will be loaded into chrome
-    #
-    #     """
-    #     encoded_extensions = []
-    #     for ext in self._extension_files:
-    #         file_ = open(ext, 'rb')
-    #         # Should not use base64.encodestring() which inserts newlines every
-    #         # 76 characters (per RFC 1521).  Chromedriver has to remove those
-    #         # unnecessary newlines before decoding, causing performance hit.
-    #         encoded_extensions.append(base64.b64encode(file_.read()).decode('UTF-8'))
-    #
-    #         file_.close()
-    #     return encoded_extensions + self._extensions
-
     def add_extension(self, extension):
-        chrome_options = Options()
-        chrome_options.add_extension(extension)
-        selenium_capabilities = chrome_options.to_capabilities()
+        file_ = open(extension, 'rb')
+        encoded_extension = base64.b64encode(file_.read()).decode('UTF-8')
+        file_.close()
 
-        self.desired['goog:chromeOptions']['extensions'].append(selenium_capabilities['goog:chromeOptions']['extensions'][0])
+        self.desired['goog:chromeOptions']['extensions'].append(encoded_extension)
 
     def set_user_agent(self, user_agent):
         self.add_argument('user-agent={}'.format(user_agent))
