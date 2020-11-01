@@ -21,7 +21,7 @@ if platform.platform() == 'Ubuntu':
 else:
     caps.add_extension(os.path.join(here, 'proxyautologin.crx'))
 
-driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
+driver = webdriver.ChromeDriver(ChromeDriverManager("86.0").install(), desired_capabilities=caps.desired)
 
 class TestMelenium(unittest.TestCase):
 
