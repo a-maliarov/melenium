@@ -74,7 +74,7 @@ class TestMelenium(unittest.TestCase):
     #-------------------------------------------------------------------------
 
     def test_chromedriver_find(self):
-        element = driver.find('input', {'type': 'hidden'})
+        element = driver.find('img')
         self.assertIsNotNone(element)
 
     def test_chromedriver_find_2(self):
@@ -82,7 +82,7 @@ class TestMelenium(unittest.TestCase):
         self.assertIsNone(element)
 
     def test_chromedriver_find_element_by_bs(self):
-        bs_element = BS(driver.page_source, features = 'html.parser').find('input', {'type': 'hidden'})
+        bs_element = BS(driver.page_source, features = 'html.parser').find('img')
         element = driver.find_element_by_bs(bs_element)
         self.assertIsNotNone(element)
 
