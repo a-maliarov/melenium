@@ -8,6 +8,8 @@ melenium.wait_for
 
 __all__ = ['WaitFor']
 
+import time
+
 try:
     from bs4 import BeautifulSoup as BS
 except ImportError:
