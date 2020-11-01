@@ -30,7 +30,8 @@ classifiers = [
 ]
 
 requires = [
-    'selenium ~= 3.141.0'
+    'selenium ~= 3.141.0',
+    'bs4 ~= 0.0.1'
 ]
 
 modules = [
