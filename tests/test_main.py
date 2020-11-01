@@ -28,7 +28,6 @@ class TestMelenium(unittest.TestCase):
     @unittest.skipIf(sys.platform.startswith("win") == False, "requires Ubuntu")
     def test_capabilities_add_extension(self):
         initial_title = driver.title
-        driver.get('https://www.amazon.com/errors/validateCaptcha')
         self.assertEqual('Options - Proxy Auto Auth', initial_title)
 
     def test_capabilities_add_argument(self):
@@ -74,6 +73,7 @@ class TestMelenium(unittest.TestCase):
     #-------------------------------------------------------------------------
 
     def test_chromedriver_find(self):
+        driver.get('https://www.amazon.com/errors/validateCaptcha')
         element = driver.find('img')
         self.assertIsNotNone(element)
 
