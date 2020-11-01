@@ -80,6 +80,22 @@ class TestMelenium(unittest.TestCase):
         driver.quit()
         self.assertIsNotNone(element)
 
+    def test_chromedriver_wait_for_phrase_in_link(self):
+        caps = webdriver.ChromeCapabilities('maliarov')
+        caps.add_argument('--no-sandbox')
+        caps.add_argument('--headless')
+        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
+        driver.get('https://www.amazon.com/errors/validateCaptcha')
+        driver.wait_for.phrase_in_link(10, 'validateCaptcha')
+
+    def test_chromedriver_wait_for_element_in_dom(self):
+        caps = webdriver.ChromeCapabilities('maliarov')
+        caps.add_argument('--no-sandbox')
+        caps.add_argument('--headless')
+        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
+        driver.get('https://www.amazon.com/errors/validateCaptcha')
+        driver.wait_for.element_in_dom(10, 'div', {'class': 'test'})
+
 #--------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
