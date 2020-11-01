@@ -12,7 +12,8 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import *
 import pyaction as pa
 import pickle
-import time
+
+from .wait_for import WaitFor
 
 try:
     from bs4 import BeautifulSoup as BS
