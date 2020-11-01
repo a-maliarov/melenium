@@ -1,5 +1,11 @@
 language: python
 
+services:
+  - xvfb
+
+addons:
+  chrome: stable
+
 python:
   - "3.6"
   - "3.7"
