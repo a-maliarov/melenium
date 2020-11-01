@@ -10,13 +10,15 @@ __all__ = ['ChromeCapabilities']
 
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver import *
+import pyaction as pa
+import pickle
+import time
+
 try:
     from bs4 import BeautifulSoup as BS
 except ImportError:
     from beautifulsoup4 import BeautifulSoup as BS
-from selenium.webdriver import *
-import pickle
-import time
 
 #-----------------------------------------------------------------------------
 
@@ -121,84 +123,50 @@ class ChromeCapabilities(object):
 
 #-----------------------------------------------------------------------------
 
-# def get_xpath(element):
-#
-#     def get_index(el):
-#         prev_sibs = [tag for tag in el.previous_siblings if tag.name == el.name]
-#         next_sibs = [tag for tag in el.next_siblings if tag.name == el.name]
-#
-#         if (len(prev_sibs) != 0) and (len(next_sibs) != 0):
-#             result = '[' + str(len(prev_sibs) + 1) + ']'
-#         elif (len(prev_sibs) == 0) and (len(next_sibs) != 0):
-#             result = '[1]'
-#         elif (len(prev_sibs) != 0) and (len(next_sibs) == 0):
-#             result = '[' + str(len(prev_sibs) + 1) + ']'
-#         elif (len(prev_sibs) == 0) and (len(next_sibs) == 0):
-#             result = ''
-#         else:
-#             result = ''
-#
-#         return result
-#
-#     xpath = ''
-#     current_element = element
-#     while current_element.name != 'html':
-#         xpath = '/' + current_element.name + get_index(current_element) + xpath
-#         current_element = current_element.parent
-#
-#     return '/html' + xpath
-#
-# class ChromeDriver(webdriver.Chrome):
-#
-#     def wait_for_element_in_dom(self, *argv, **kwargs):
-#         counter = 0
-#         while BS(self.page_source, features = 'html.parser').find(*argv, **kwargs) == None:
-#             time.sleep(1)
-#             counter += 1
-#             if counter == 60:
-#                 return None
-#
-#     def wait_for_phrase_in_link(self, phrase, timeout = 60):
-#         counter = 0
-#         while phrase not in self.current_url:
-#             time.sleep(1)
-#             counter += 1
-#             if counter == timeout:
-#                 return None
-#
-#     def advanced_find(self, *argv, **kwargs):
-#         html_element = BS(self.page_source, features = 'html.parser').find(*argv, **kwargs)
-#         if html_element != None:
-#             xpath = get_xpath(html_element)
-#             return self.find_element_by_xpath(xpath)
-#         else:
-#             return None
-#
-#     def find_element_by_html(self, html_element):
-#         if html_element != None:
-#             xpath = get_xpath(html_element)
-#             return self.find_element_by_xpath(xpath)
-#         else:
-#             return None
-#
-#     def upload_cookies(self, cookies_file):
-#         for cookie in pickle.load(open(cookies_file, "rb")):
-#             if 'expiry' in cookie:
-#                 del cookie['expiry']
-#             self.add_cookie(cookie)
-#
-#     @classmethod
-#     def from_scratch(cls):
-#         # Downloads webdriver
-#         pass
-#
-#     @staticmethod
-#     def click_ignoring_interception(element):
-#         while True:
-#             try:
-#                 element.click()
-#                 break
-#             except ElementClickInterceptedException:
-#                 time.sleep(0.1)
-#
-# #-----------------------------------------------------------------------------------------------------------------------------------------------------------
+class ChromeDriver(Chrome):
+
+    def find(self, *argv, **kwargs):
+        bs_element = BS(self.page_source, features = 'html.parser').find(*argv, **kwargs)
+
+        if bs_element != None:
+            xpath = pa.get_xpath(bs_element)
+            return self.find_element_by_xpath(xpath)
+
+        else:
+            return None
+
+    def find_element_by_bs(self, bs_element):
+        if bs_element != None:
+            xpath = pa.get_xpath(bs_element)
+            return self.find_element_by_xpath(xpath)
+
+        else:
+            return None
+
+    def upload_cookies(self, cookies_file, exclude=['expiry']):
+        for cookie in pickle.load(open(cookies_file, "rb")):
+
+            for i in exlude:
+                if i in cookie:
+                    del cookie['expiry']
+
+            self.add_cookie(cookie)
+
+    # def wait_for_element_in_dom(self, *argv, **kwargs):
+    #     counter = 0
+    #     while BS(self.page_source, features = 'html.parser').find(*argv, **kwargs) == None:
+    #         time.sleep(1)
+    #         counter += 1
+    #
+    #         if counter == 60:
+    #             return None
+    #
+    # def wait_for_phrase_in_link(self, phrase, timeout = 60):
+    #     counter = 0
+    #     while phrase not in self.current_url:
+    #         time.sleep(1)
+    #         counter += 1
+    #         if counter == timeout:
+    #             return None
+
+#-----------------------------------------------------------------------------
