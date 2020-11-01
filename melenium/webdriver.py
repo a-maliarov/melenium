@@ -8,7 +8,6 @@ melenium.webdriver
 
 __all__ = ['ChromeCapabilities', 'ChromeDriver']
 
-from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver import *
 import pyaction as pa
