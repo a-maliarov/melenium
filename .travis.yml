@@ -10,6 +10,7 @@ install:
   - pip install git+https://github.com/a-maliarov/melenium
 
 before_script:
+  - pip install webdriver_manager
   - pip install coverage
   - pip install codecov
 
