@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 from bs4 import BeautifulSoup as BS
 from melenium import webdriver
+import platform
 import unittest
 import sys
 import os
@@ -12,7 +13,23 @@ import os
 
 here = os.path.abspath(os.path.dirname(__file__))
 
+caps = webdriver.ChromeCapabilities('maliarov')
+
+if platform.platform() == 'Ubuntu':
+    caps.add_argument('--no-sandbox')
+    caps.add_argument('--headless')
+else:
+    caps.add_extension(os.path.join(here, 'proxyautologin.crx'))
+
+driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
+
 class TestMelenium(unittest.TestCase):
+
+    @unittest.skipIf(sys.platform.startswith("win") == False, "requires Ubuntu")
+    def test_capabilities_add_extension(self):
+        initial_title = driver.title
+        driver.get('https://www.amazon.com/errors/validateCaptcha')
+        self.assertEqual('Options - Proxy Auto Auth', initial_title)
 
     def test_capabilities_add_argument(self):
         caps = webdriver.ChromeCapabilities()
@@ -27,11 +44,6 @@ class TestMelenium(unittest.TestCase):
         caps = webdriver.ChromeCapabilities()
         caps.add_experimental_option(chrome_prefs)
         self.assertEqual(chrome_prefs, caps.desired['goog:chromeOptions']['prefs'])
-
-    def test_capabilities_add_extension(self):
-        caps = webdriver.ChromeCapabilities()
-        caps.add_extension(os.path.join(here, 'proxyautologin.crx'))
-        self.assertIsNotNone(caps.desired['goog:chromeOptions']['extensions'])
 
     def test_capabilities_set_user_agent(self):
         caps = webdriver.ChromeCapabilities()
@@ -59,42 +71,41 @@ class TestMelenium(unittest.TestCase):
         caps = webdriver.ChromeCapabilities.from_selenium_options(chrome_options)
         self.assertIn('window-size=1920,1080', caps.desired['goog:chromeOptions']['args'])
 
+    #-------------------------------------------------------------------------
+
     def test_chromedriver_find(self):
-        caps = webdriver.ChromeCapabilities('maliarov')
-        caps.add_argument('--no-sandbox')
-        caps.add_argument('--headless')
-        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
-        driver.get('https://www.amazon.com/errors/validateCaptcha')
         element = driver.find('input', {'type': 'hidden'})
-        driver.quit()
         self.assertIsNotNone(element)
+
+    def test_chromedriver_find_2(self):
+        element = driver.find('input', {'type': 'doesntexist'})
+        self.assertIsNone(element)
 
     def test_chromedriver_find_element_by_bs(self):
-        caps = webdriver.ChromeCapabilities('maliarov')
-        caps.add_argument('--no-sandbox')
-        caps.add_argument('--headless')
-        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
-        driver.get('https://www.amazon.com/errors/validateCaptcha')
         bs_element = BS(driver.page_source, features = 'html.parser').find('input', {'type': 'hidden'})
         element = driver.find_element_by_bs(bs_element)
-        driver.quit()
         self.assertIsNotNone(element)
 
+    def test_chromedriver_find_element_by_bs_2(self):
+        bs_element = BS(driver.page_source, features = 'html.parser').find('input', {'type': 'doesntexist'})
+        element = driver.find_element_by_bs(bs_element)
+        self.assertIsNone(element)
+
     def test_chromedriver_wait_for_phrase_in_link(self):
-        caps = webdriver.ChromeCapabilities('maliarov')
-        caps.add_argument('--no-sandbox')
-        caps.add_argument('--headless')
-        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
-        driver.get('https://www.amazon.com/errors/validateCaptcha')
         driver.wait_for.phrase_in_link(10, 'validateCaptcha')
+        self.assertIsNotNone(1)
+
+    def test_chromedriver_wait_for_phrase_in_link_2(self):
+        driver.wait_for.phrase_in_link(10, 'doesntexist')
+        self.assertIsNotNone(1)
 
     def test_chromedriver_wait_for_element_in_dom(self):
-        caps = webdriver.ChromeCapabilities('maliarov')
-        caps.add_argument('--no-sandbox')
-        caps.add_argument('--headless')
-        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
-        driver.get('https://www.amazon.com/errors/validateCaptcha')
-        driver.wait_for.element_in_dom(10, 'div', {'class': 'test'})
+        driver.wait_for.element_in_dom(10, 'div')
+        self.assertIsNotNone(1)
+
+    def test_chromedriver_wait_for_element_in_dom_2(self):
+        driver.wait_for.element_in_dom(10, 'div', {'class': 'doesntexist'})
+        self.assertIsNotNone(1)
 
 #--------------------------------------------------------------------------------------------------------------
 
