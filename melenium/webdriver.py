@@ -10,7 +10,7 @@ __all__ = ['ChromeCapabilities']
 
 from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.chrome.options import Options
-from bs4 import BeautifulSoup as BS
+# from bs4 import BeautifulSoup as BS
 from selenium.webdriver import *
 import pickle
 import time
