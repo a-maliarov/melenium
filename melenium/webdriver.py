@@ -145,7 +145,7 @@ class WaitFor(object):
     def __init__(self, driver):
         self._driver = driver
 
-    def phrase_in_link(self, timeout=60, phrase='/'):
+    def phrase_in_link(self, timeout, phrase='/'):
         counter = 0
 
         while phrase not in self._driver.current_url:
@@ -155,7 +155,7 @@ class WaitFor(object):
             if counter == timeout:
                 return None
 
-    def element_in_dom(self, timeout=60, *argv, **kwargs):
+    def element_in_dom(self, timeout, *argv, **kwargs):
         counter = 0
 
         while BS(self._driver.page_source, features = 'html.parser').find(*argv, **kwargs) == None:
