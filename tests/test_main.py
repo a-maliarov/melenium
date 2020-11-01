@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from bs4 import BeautifulSoup as BS
 from melenium import webdriver
 import unittest
 import sys
@@ -56,6 +58,27 @@ class TestMelenium(unittest.TestCase):
         chrome_options.add_argument('window-size=1920,1080')
         caps = webdriver.ChromeCapabilities.from_selenium_options(chrome_options)
         self.assertIn('window-size=1920,1080', caps.desired['goog:chromeOptions']['args'])
+
+    def test_chromedriver_find(self):
+        caps = webdriver.ChromeCapabilities('maliarov')
+        caps.add_argument('--no-sandbox')
+        caps.add_argument('--headless')
+        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
+        driver.get('https://www.amazon.com/errors/validateCaptcha')
+        element = driver.find('input', {'type': 'hidden'})
+        driver.quit()
+        self.assertIsNotNone(element)
+
+    def test_chromedriver_find_element_by_bs(self):
+        caps = webdriver.ChromeCapabilities('maliarov')
+        caps.add_argument('--no-sandbox')
+        caps.add_argument('--headless')
+        driver = webdriver.ChromeDriver(ChromeDriverManager().install(), desired_capabilities=caps.desired)
+        driver.get('https://www.amazon.com/errors/validateCaptcha')
+        bs_element = BS(driver.page_source, features = 'html.parser').find('input', {'type': 'hidden'})
+        element = driver.find_element_by_bs(bs_element)
+        driver.quit()
+        self.assertIsNotNone(element)
 
 #--------------------------------------------------------------------------------------------------------------
 
