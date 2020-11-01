@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """
-melenium._presets
-~~~~~~~~~~~~~~~~~
+melenium.presets
+~~~~~~~~~~~~~~~~
+
+List of chrome capabilities presets to be used by ChromeDriver.
 
 """
 
