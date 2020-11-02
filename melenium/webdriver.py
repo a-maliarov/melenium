@@ -114,9 +114,9 @@ class ChromeDriver(Chrome):
     def upload_cookies(self, cookies_file, exclude=['expiry']):
         for cookie in pickle.load(open(cookies_file, "rb")):
 
-            for i in exlude:
-                if i in cookie:
-                    del cookie['expiry']
+            for key_ in exlude:
+                if key_ in cookie:
+                    del cookie[key_]
 
             self.add_cookie(cookie)
 
