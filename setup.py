@@ -37,6 +37,9 @@ requires = [
 ]
 
 modules = [
+    'melenium.common.capabilities',
+    'melenium.common.presets',
+    'melenium.wait_for',
     'melenium.webdriver'
 ]
 
