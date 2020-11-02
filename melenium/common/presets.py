@@ -4,7 +4,7 @@
 melenium.presets
 ~~~~~~~~~~~~~~~~
 
-List of chrome capabilities presets to be used by ChromeDriver.
+List of chrome capabilities presets to be used by ChromeCapabilities.
 
 """
 
