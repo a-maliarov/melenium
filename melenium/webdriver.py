@@ -8,7 +8,7 @@ melenium.webdriver
 
 __all__ = ['ChromeCapabilities', 'ChromeDriver']
 
-from selenium.webdriver import *
+from selenium.webdriver import Chrome
 import pyaction as pa
 import pickle
 
