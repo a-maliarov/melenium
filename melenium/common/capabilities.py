@@ -41,9 +41,9 @@ class ChromeCapabilities(object):
         self.add_argument('user-agent={}'.format(user_agent))
 
     def set_proxy(self, proxy):
-        proxy_types_list = ['httpProxy', 'ftpProxy', 'sslProxy']
+        proxy_types = ['httpProxy', 'ftpProxy', 'sslProxy']
 
-        for type in proxy_types_list:
+        for type in proxy_types:
             self.desired['proxy'][type] = proxy
 
     def set_download_folder(self, folder_path):
