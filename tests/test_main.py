@@ -16,6 +16,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 caps = webdriver.ChromeCapabilities('maliarov')
 caps.add_argument('--no-sandbox')
 caps.add_argument('--headless')
+driver = webdriver.ChromeDriver(ChromeDriverManager("86.0.4240.22").install(), desired_capabilities=caps.desired)
 driver.get('https://www.amazon.com/errors/validateCaptcha')
 
 class TestMelenium(unittest.TestCase):
