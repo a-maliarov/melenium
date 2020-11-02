@@ -14,21 +14,17 @@ import os
 here = os.path.abspath(os.path.dirname(__file__))
 
 caps = webdriver.ChromeCapabilities('maliarov')
-
-if platform.platform() == 'Ubuntu':
-    caps.add_argument('--no-sandbox')
-    caps.add_argument('--headless')
-else:
-    caps.add_extension(os.path.join(here, 'proxyautologin.crx'))
+caps.add_argument('--no-sandbox')
+caps.add_argument('--headless')
 
 driver = webdriver.ChromeDriver(ChromeDriverManager("86.0.4240.22").install(), desired_capabilities=caps.desired)
 
 class TestMelenium(unittest.TestCase):
 
-    @unittest.skipIf(sys.platform.startswith("win") == False, "requires Ubuntu")
     def test_capabilities_add_extension(self):
-        initial_title = driver.title
-        self.assertEqual('Options - Proxy Auto Auth', initial_title)
+        caps = webdriver.ChromeCapabilities()
+        caps.add_extension(os.path.join(here, 'proxyautologin.crx'))
+        self.assertIsNotNone(caps.desired['goog:chromeOptions']['extensions'])
 
     def test_capabilities_add_argument(self):
         caps = webdriver.ChromeCapabilities()
