@@ -33,7 +33,7 @@ requires = [
     'selenium ~= 3.141.0',
     'bs4 ~= 0.0.1',
     'beautifulsoup4 ~= 4.9.3',
-    'pyaction ~= 0.0.5'
+    'pyaction ~= 0.1.0'
 ]
 
 modules = [
