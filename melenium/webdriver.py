@@ -6,9 +6,14 @@ melenium.webdriver
 
 """
 
-__all__ = ['ChromeCapabilities', 'ChromeDriver']
+__all__ = ['ChromeCapabilities', 'ChromeDriver', 'ChromeSWB']
 
-from selenium.webdriver import Chrome
+from selenium.webdriver import Chrome as SeChrome
+
+from seleniumwire.webdriver import Chrome as SwChrome
+from seleniumwire.webdriver.request import InspectRequestsMixin
+from seleniumwire.proxy.client import AdminClient
+
 import pyaction as pa
 import pickle
 
@@ -22,7 +27,7 @@ except ImportError:
 
 #-----------------------------------------------------------------------------
 
-class ChromeDriver(Chrome):
+class Chrome(SeChrome):
 
     def __init__(self, executable_path="chromedriver", port=0,
                  options=None, service_args=None,
@@ -79,5 +84,44 @@ class ChromeDriver(Chrome):
     @property
     def wait_for(self):
         return self._wait_for
+
+#-----------------------------------------------------------------------------
+
+class ChromeSWB(InspectRequestsMixin, Chrome):
+
+    def __init__(self, *args, seleniumwire_options=None, **kwargs):
+
+        if seleniumwire_options is None:
+            seleniumwire_options = {}
+
+        self._client = AdminClient()
+        addr, port = self._client.create_proxy(
+            port=seleniumwire_options.pop('port', 0),
+            options=seleniumwire_options
+        )
+
+        if 'port' not in seleniumwire_options:
+            try:
+                capabilities = kwargs.pop('desired_capabilities')
+            except KeyError:
+                capabilities = ChromeCapabilities('empty').desired
+
+            capabilities['proxy'] = {
+                'proxyType': 'manual',
+                'httpProxy': '{}:{}'.format(addr, port),
+                'sslProxy': '{}:{}'.format(addr, port),
+                'noProxy': ''
+            }
+            capabilities['acceptInsecureCerts'] = True
+
+            kwargs['desired_capabilities'] = capabilities
+
+        kwargs['desired_capabilities']['goog:chromeOptions']['args'].append('proxy-bypass-list=<-loopback>')
+
+        super().__init__(*args, **kwargs)
+
+    def quit(self):
+        self._client.destroy_proxy()
+        super().quit()
 
 #-----------------------------------------------------------------------------
